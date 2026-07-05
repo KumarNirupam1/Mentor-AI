@@ -5,6 +5,7 @@ import { MessageSquarePlus, Trash2 } from "lucide-react";
 
 import { PageShell } from "@/components/PageShell";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
+import { PersonaAvatar } from "@/components/PersonaAvatar";
 import { Badge } from "@/components/ui/Badge";
 import { useAuth } from "@/context/AuthContext";
 import { createChat, deleteChat, getAllChats } from "@/lib/chats";
@@ -72,24 +73,19 @@ export function ChatList({ persona, onBack, onSelectChat }: ChatListProps) {
 
   return (
     <PageShell showNav={false}>
-      <header className="border-b border-[#e5e5e5] bg-cream/90 backdrop-blur-sm">
+      <header className="border-b border-[#d1e3ef] bg-sky/80 backdrop-blur-md">
         <div className="mx-auto flex max-w-3xl items-center gap-3 px-4 py-4">
           <button
             type="button"
             onClick={onBack}
-            className="shrink-0 rounded-full border border-purple/20 bg-white px-4 py-2 text-sm font-semibold text-purple hover:bg-beige/50"
+            className="shrink-0 rounded-full border border-[#d1e3ef] bg-white px-4 py-2 text-sm font-semibold text-ink hover:bg-sky-deep"
           >
             ← Back
           </button>
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2">
-              <span
-                className="flex h-8 w-8 items-center justify-center rounded-lg text-sm card-shadow"
-                style={{ backgroundColor: meta.cardColor }}
-              >
-                {meta.emoji}
-              </span>
-              <h1 className="truncate font-display text-lg text-purple">
+              <PersonaAvatar persona={persona} size="sm" className="rounded-lg" />
+              <h1 className="truncate font-display text-lg text-ink">
                 {meta.name}&apos;s Chats
               </h1>
             </div>
@@ -98,7 +94,7 @@ export function ChatList({ persona, onBack, onSelectChat }: ChatListProps) {
           <button
             type="button"
             onClick={() => void logout()}
-            className="shrink-0 rounded-full border border-purple/20 bg-white px-3 py-2 text-sm font-semibold text-purple"
+            className="shrink-0 rounded-full border border-[#d1e3ef] bg-white px-3 py-2 text-sm font-semibold text-ink"
           >
             Logout
           </button>
@@ -110,14 +106,14 @@ export function ChatList({ persona, onBack, onSelectChat }: ChatListProps) {
           type="button"
           onClick={() => void handleNewChat()}
           disabled={isCreating}
-          className="mb-8 flex w-full items-center justify-center gap-2 rounded-full bg-purple py-3.5 text-base font-semibold text-white disabled:opacity-60 sm:w-auto sm:px-8"
+          className="mb-8 flex w-full items-center justify-center gap-2 rounded-full bg-coral py-3.5 text-base font-semibold text-white shadow-md shadow-coral/20 disabled:opacity-60 sm:w-auto sm:px-8"
         >
           <MessageSquarePlus className="h-5 w-5" />
-          {isCreating ? "Creating..." : "Start new chat ✨"}
+          {isCreating ? "Creating..." : "Start new chat"}
         </button>
 
         <div className="mb-5 flex items-center justify-between">
-          <h2 className="font-display text-lg text-purple">Your conversations</h2>
+          <h2 className="font-display text-lg text-ink">Your conversations</h2>
           <Badge>{chats.length}</Badge>
         </div>
 
@@ -130,9 +126,9 @@ export function ChatList({ persona, onBack, onSelectChat }: ChatListProps) {
         {isLoading ? (
           <LoadingSpinner label="Loading your chats..." />
         ) : chats.length === 0 ? (
-          <div className="rounded-2xl border border-dashed border-purple/30 bg-white py-16 text-center card-shadow">
-            <p className="text-4xl">💬</p>
-            <p className="mt-4 font-display text-lg text-purple">No chats yet!</p>
+          <div className="mockup-card border-dashed py-16 text-center">
+            <PersonaAvatar persona={persona} size="lg" className="mx-auto" />
+            <p className="mt-4 font-display text-lg text-ink">No chats yet!</p>
             <p className="mt-2 text-sm text-muted-foreground">
               Start your first conversation with {meta.name}
             </p>
@@ -151,7 +147,7 @@ export function ChatList({ persona, onBack, onSelectChat }: ChatListProps) {
                     onSelectChat(chat);
                   }
                 }}
-                className={`group flex cursor-pointer items-center justify-between rounded-2xl border border-[#e5e5e5] bg-white px-4 py-3.5 card-shadow transition-all hover:card-shadow-lg hover:-translate-y-0.5 ${index % 2 === 1 ? "sm:ml-4" : ""}`}
+                className={`group flex cursor-pointer items-center justify-between mockup-card px-4 py-3.5 transition-all hover:-translate-y-0.5 hover:card-shadow-lg ${index % 2 === 1 ? "sm:ml-4" : ""}`}
               >
                 <div className="min-w-0 flex-1 pr-4">
                   <p className="truncate font-display font-bold text-[#2c2c2c]">

@@ -3,9 +3,10 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { Sparkles } from "lucide-react";
 
 import { LoadingSpinner } from "@/components/LoadingSpinner";
-import { PageShell } from "@/components/PageShell";
+import { PageShell, PillBadge } from "@/components/PageShell";
 import { Button } from "@/components/ui/Button";
 import { useAuth } from "@/context/AuthContext";
 import { getGoogleLoginUrl } from "@/lib/auth";
@@ -24,7 +25,7 @@ export default function LoginPage() {
     return (
       <PageShell showNav={false}>
         <div className="flex flex-1 items-center justify-center py-32">
-          <LoadingSpinner label="Getting things ready..." />
+          <LoadingSpinner label="Getting things ready... ✨" />
         </div>
       </PageShell>
     );
@@ -33,20 +34,26 @@ export default function LoginPage() {
   return (
     <PageShell showNav={false}>
       <div className="flex flex-1 flex-col items-center justify-center px-4 py-16">
-        <div className="w-full max-w-md rounded-3xl border border-black/10 bg-white p-8 card-shadow-lg sm:p-10">
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-lavender text-3xl card-shadow">
-            👋
+        <div className="mb-6">
+          <PillBadge icon={<Sparkles className="h-4 w-4 text-coral" />}>
+            Welcome back 👋
+          </PillBadge>
+        </div>
+
+        <div className="w-full max-w-md mockup-card p-8 sm:p-10">
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-lavender text-3xl">
+            🎓
           </div>
 
-          <h1 className="mt-6 text-center font-display text-3xl text-purple">
-            Welcome back!
+          <h1 className="mt-6 text-center font-display text-3xl text-ink">
+            Sign in to Mentor-AI
           </h1>
           <p className="mt-2 text-center text-muted-foreground">
-            Sign in to chat with your favorite AI mentors
+            Chat with Hitesh & Piyush  your AI mentors await
           </p>
 
           <a href={getGoogleLoginUrl()} className="mt-8 block">
-            <Button fullWidth variant="secondary" className="flex h-14 items-center justify-center gap-3 !bg-white border border-[#e5e5e5] !text-[#2c2c2c]">
+            <Button fullWidth variant="secondary" className="flex h-14 items-center justify-center gap-3">
               <svg className="h-5 w-5" viewBox="0 0 24 24" aria-hidden>
                 <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4" />
                 <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
@@ -58,7 +65,7 @@ export default function LoginPage() {
           </a>
 
           <p className="mt-6 text-center text-sm text-muted-foreground">
-            <Link href="/" className="font-semibold text-purple underline-offset-4 hover:underline">
+            <Link href="/" className="font-semibold text-coral underline-offset-4 hover:underline">
               ← Back to home
             </Link>
           </p>

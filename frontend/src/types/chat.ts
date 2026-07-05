@@ -16,17 +16,17 @@ export interface Message {
 
 export const PERSONA_META: Record<
   Persona,
-  { name: string; emoji: string; cardColor: string; accentClass: string }
+  { name: string; avatar: string; cardColor: string; accentClass: string }
 > = {
   hitesh: {
     name: "Hitesh",
-    emoji: "☕",
+    avatar: "/hitesh.webp",
     cardColor: "#faf393",
     accentClass: "bg-yellow",
   },
   piyush: {
     name: "Piyush",
-    emoji: "🚀",
+    avatar: "/piyush.webp",
     cardColor: "#a6a5d4",
     accentClass: "bg-lavender",
   },
@@ -39,9 +39,9 @@ export const PERSONAS: {
   description: string;
   avatar: string;
   cardColor: string;
-  emoji: string;
   role: string;
   quote: string;
+  conversationPreview: { role: "user" | "assistant"; content: string }[];
 }[] = [
   {
     id: "hitesh",
@@ -50,10 +50,29 @@ export const PERSONAS: {
     role: "Full-Stack Educator",
     description:
       "Master full-stack development, JavaScript, and building real-world apps with an experienced educator.",
-    avatar: "https://github.com/hiteshchoudhary.png",
+    avatar: "/hitesh.webp",
     cardColor: "#faf393",
-    emoji: "☕",
     quote: "Hey! Let's build something cool!",
+    conversationPreview: [
+      {
+        role: "user",
+        content: "MERN pehle seekhun ya GenAI?",
+      },
+      {
+        role: "assistant",
+        content:
+          "Dekho, software development skill hai jo aapko seekhni padegi. Interface to lagega na — chahe AI seekho ya ML, authentication to lagega hi. Bina HTML, JS ke project kaise banaoge?",
+      },
+      {
+        role: "user",
+        content: "API keys frontend me chipka du?",
+      },
+      {
+        role: "assistant",
+        content:
+          "Kuch b use kro bs keys frontend me mt chipkana, otherwise you are on your own.",
+      },
+    ],
   },
   {
     id: "piyush",
@@ -62,10 +81,29 @@ export const PERSONAS: {
     role: "GenAI Builder",
     description:
       "Dive into programming, GenAI, web dev, and building projects from scratch with a creative builder.",
-    avatar: "https://github.com/piyushgarg-dev.png",
+    avatar: "/piyush.webp",
     cardColor: "#a6a5d4",
-    emoji: "🚀",
     quote: "Let's ship your next big idea!",
+    conversationPreview: [
+      {
+        role: "user",
+        content: "Can we build our own LLM?",
+      },
+      {
+        role: "assistant",
+        content:
+          "Let's make our own llm — that's the whole vibe. Bas JavaScript aani chahiye, ek simple mon stack project ho, chahe todo app hi ho, even that is enough.",
+      },
+      {
+        role: "user",
+        content: "Live itni der baad kyun?",
+      },
+      {
+        role: "assistant",
+        content:
+          "Main 5 minute se live tha but galat YouTube account se connected tha. Soch raha tha koi aaya kyon nahi... fir realize — main kisi aur channel pe live hoon!",
+      },
+    ],
   },
 ];
 

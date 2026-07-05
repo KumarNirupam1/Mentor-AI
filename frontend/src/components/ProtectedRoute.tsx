@@ -18,8 +18,8 @@ export function ProtectedRoute({ children }: { children: React.ReactNode }) {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-cream">
-        <LoadingSpinner />
+      <div className="dot-bg flex min-h-screen items-center justify-center">
+        <LoadingSpinner label="Loading your session... ✨" />
       </div>
     );
   }

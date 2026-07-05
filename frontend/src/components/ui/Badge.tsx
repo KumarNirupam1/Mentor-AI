@@ -12,8 +12,8 @@ export function Badge({
 }: BadgeProps) {
   const styles =
     variant === "outline"
-      ? "border border-purple/20 bg-transparent text-purple"
-      : "bg-lavender/40 text-purple";
+      ? "border border-[#d1e3ef] bg-white text-ink"
+      : "bg-sky-deep text-ink";
 
   return (
     <span

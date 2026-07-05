@@ -1,6 +1,14 @@
 @import "tailwindcss";
 
 :root {
+  /* Detoxie web — pale blue fresh palette */
+  --sky: #e8f4fc;
+  --sky-deep: #d4ebf7;
+  --ink: #1a2744;
+  --coral: #f08a64;
+  --coral-dark: #e06d45;
+
+  /* Detoxie app accents (cards, personas) */
   --cream: #fbf7ef;
   --purple: #4c4b7e;
   --orange: #ffbf75;
@@ -10,16 +18,16 @@
   --beige: #efe5d3;
   --peach-cta: #fddab1;
   --dark: #2c2c2c;
-  --border: #e5e5e5;
-  --muted: #6b7280;
+  --border: #d1e3ef;
+  --muted: #5a6b7d;
   --destructive: #ef4444;
 
-  --background: var(--cream);
-  --foreground: var(--purple);
+  --background: var(--sky);
+  --foreground: var(--ink);
   --primary: var(--purple);
   --primary-foreground: #ffffff;
   --card: #ffffff;
-  --card-foreground: var(--dark);
+  --card-foreground: var(--ink);
   --muted-foreground: var(--muted);
   --input-bg: var(--beige);
 }
@@ -32,6 +40,11 @@
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
   --color-muted-foreground: var(--muted-foreground);
+  --color-sky: var(--sky);
+  --color-sky-deep: var(--sky-deep);
+  --color-ink: var(--ink);
+  --color-coral: var(--coral);
+  --color-coral-dark: var(--coral-dark);
   --color-cream: var(--cream);
   --color-purple: var(--purple);
   --color-orange: var(--orange);
@@ -42,25 +55,38 @@
   --color-peach-cta: var(--peach-cta);
   --color-destructive: var(--destructive);
   --font-display: var(--font-young-serif);
-  --font-body: var(--font-dm-sans);
+  --font-body: var(--font-poppins);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-dm-sans), system-ui, sans-serif;
+  font-family: var(--font-poppins), system-ui, sans-serif;
 }
 
 .font-display {
   font-family: var(--font-young-serif), Georgia, serif;
 }
 
+/* Detoxie landing dot grid */
+.dot-bg {
+  background-color: var(--sky);
+  background-image: radial-gradient(circle, #b8d4e8 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
 .card-shadow {
-  box-shadow: 0 2px 8px rgba(76, 75, 126, 0.08);
+  box-shadow: 0 4px 20px rgba(26, 39, 68, 0.06);
 }
 
 .card-shadow-lg {
-  box-shadow: 0 8px 24px rgba(76, 75, 126, 0.12);
+  box-shadow: 0 12px 40px rgba(26, 39, 68, 0.1);
+}
+
+.mockup-card {
+  border-radius: 1.75rem;
+  background: white;
+  box-shadow: 0 8px 30px rgba(26, 39, 68, 0.08);
 }
 
 .speech-bubble-user {
@@ -76,7 +102,7 @@ body {
   border: 1px solid var(--border);
   border-radius: 1.25rem 1.25rem 1.25rem 0.25rem;
   padding: 0.75rem 1rem;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 2px 8px rgba(26, 39, 68, 0.05);
 }
 
 @keyframes float {
@@ -107,4 +133,8 @@ body {
 
 .typing-dot:nth-child(3) {
   animation-delay: 0.3s;
+}
+
+.highlight-coral {
+  color: var(--coral);
 }
