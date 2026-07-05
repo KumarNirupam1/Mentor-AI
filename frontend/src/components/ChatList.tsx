@@ -127,8 +127,7 @@ export function ChatList({ persona, onBack, onSelectChat }: ChatListProps) {
           <LoadingSpinner label="Loading your chats..." />
         ) : chats.length === 0 ? (
           <div className="mockup-card border-dashed py-16 text-center">
-            <PersonaAvatar persona={persona} size="lg" className="mx-auto" />
-            <p className="mt-4 font-display text-lg text-ink">No chats yet!</p>
+            <p className="font-display text-lg text-ink">No chats yet!</p>
             <p className="mt-2 text-sm text-muted-foreground">
               Start your first conversation with {meta.name}
             </p>

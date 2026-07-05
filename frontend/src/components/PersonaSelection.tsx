@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { LogOut, MessageCircle, Sparkles } from "lucide-react";
+import { LogOut, MessageCircle } from "lucide-react";
 
 import { PageShell, PillBadge } from "@/components/PageShell";
 import { Button } from "@/components/ui/Button";
@@ -25,10 +25,10 @@ export function PersonaSelection() {
         <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-4">
           <div className="min-w-0">
             <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
-              Dashboard 🏠
+              Dashboard
             </p>
             <h1 className="truncate font-display text-xl text-ink">
-              Hey, {user?.name?.split(" ")[0]}! 👋
+              Hey, {user?.name?.split(" ")[0]}!
             </h1>
           </div>
           <Button variant="outline" onClick={() => void logout()} className="!py-2 !px-4 text-sm">
@@ -41,49 +41,66 @@ export function PersonaSelection() {
       <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-10">
         <div className="mb-10 text-center">
           <div className="mb-4 flex justify-center">
-            <PillBadge icon={<Sparkles className="h-4 w-4 text-coral" />}>
-              Pick your mentor ✨
-            </PillBadge>
+            <PillBadge>Pick your mentor</PillBadge>
           </div>
           <h2 className="font-display text-4xl text-ink sm:text-5xl">
-            Who do you want to chat with? 💬
+            Who do you want to chat with?
           </h2>
           <p className="mt-3 text-lg text-muted-foreground">
-            Each persona has their own vibe, expertise, and teaching style 🎯
+            Each persona has their own vibe, expertise, and teaching style.
           </p>
         </div>
 
-        <div className="grid gap-8 sm:grid-cols-2">
+        <div className="grid gap-8 sm:grid-cols-2 sm:items-stretch">
           {PERSONAS.map((persona) => (
             <button
               key={persona.id}
               type="button"
               onClick={() => handleSelect(persona.id)}
-              className="mockup-card p-6 text-left transition-all hover:-translate-y-1 hover:card-shadow-lg"
+              className="mockup-card flex h-full flex-col p-6 text-left transition-all hover:-translate-y-1 hover:card-shadow-lg"
               style={{ backgroundColor: persona.cardColor }}
             >
               <div className="flex flex-col items-center text-center">
-                <div className="relative">
-                  <div className="flex h-24 w-24 items-center justify-center overflow-hidden rounded-full border-2 border-white bg-white card-shadow">
-                    <Image src={persona.avatar} alt={persona.name} width={96} height={96} className="rounded-full object-cover" />
-                  </div>
-                  <span className="absolute -top-1 -right-1 flex h-8 w-8 items-center justify-center rounded-full border border-white bg-white text-sm card-shadow">
-                    {persona.emoji}
-                  </span>
+                <div className="flex h-24 w-24 items-center justify-center overflow-hidden rounded-full border-2 border-white bg-white card-shadow">
+                  <Image
+                    src={persona.avatar}
+                    alt={persona.name}
+                    width={96}
+                    height={96}
+                    className="h-full w-full rounded-full object-cover"
+                  />
                 </div>
 
                 <h3 className="mt-5 font-display text-2xl text-ink">{persona.name}</h3>
                 <p className="mt-1 text-sm font-semibold text-purple">{persona.tagline}</p>
-
-                <div className="mt-4 rounded-2xl bg-white/50 px-4 py-3">
-                  <p className="text-sm leading-relaxed text-ink/80">{persona.description}</p>
-                </div>
-
-                <span className="mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-purple py-3 text-sm font-semibold text-white">
-                  <MessageCircle className="h-4 w-4" />
-                  Chat with {persona.name}
-                </span>
               </div>
+
+              <div className="mt-5 flex-1 space-y-2">
+                {persona.conversationPreview.map((msg, i) => {
+                  const isUser = msg.role === "user";
+                  return (
+                    <div
+                      key={i}
+                      className={`flex ${isUser ? "justify-end" : "justify-start"}`}
+                    >
+                      <div
+                        className={`max-w-[92%] rounded-2xl px-3 py-2 text-left text-xs leading-relaxed sm:text-sm ${
+                          isUser
+                            ? "bg-purple text-white"
+                            : "border border-white/60 bg-white/60 text-ink"
+                        }`}
+                      >
+                        {msg.content}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <span className="mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-purple py-3 text-sm font-semibold text-white">
+                <MessageCircle className="h-4 w-4" />
+                Chat with {persona.name}
+              </span>
             </button>
           ))}
         </div>
