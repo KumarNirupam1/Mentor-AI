@@ -16,6 +16,16 @@ const getAllChats = async (req: Request & { user?: any }, res: Response) => {
             return res.status(400).json(new ApiError(400, "Persona is required", [], ""));
         }
 
+        await Chat.deleteMany({
+            userId: userId,
+            persona: persona,
+            $or: [
+                { title: { $exists: false } },
+                { title: null },
+                { title: "" },
+            ],
+        });
+
         const chats = await Chat.find({
             userId: userId,
             persona: persona,
@@ -59,11 +69,17 @@ const deleteChat = async (req: Request & { user?: any }, res: Response) => {
         const { id } = req.params;
         const userId = req.user._id;
 
-        const chat = await Chat.findByIdAndDelete(id);
+        const chat = await Chat.findById(id);
 
         if (!chat) {
             return res.status(404).json(new ApiError(404, "Chat not found", [], ""));
-        };
+        }
+
+        if (chat.userId.toString() !== userId.toString()) {
+            return res.status(403).json(new ApiError(403, "You are not authorized to delete this chat", [], ""));
+        }
+
+        await chat.deleteOne();
 
         return res.status(200).json(new ApiResponse(200, { chat }, "Chat deleted successfully"));
     } catch (error) {
