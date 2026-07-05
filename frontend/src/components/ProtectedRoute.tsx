@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
+import { LoadingSpinner } from "@/components/LoadingSpinner";
 import { useAuth } from "@/context/AuthContext";
 
 export function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -17,8 +18,8 @@ export function ProtectedRoute({ children }: { children: React.ReactNode }) {
 
   if (isLoading) {
     return (
-      <div className="flex flex-1 items-center justify-center">
-        <p className="text-zinc-500">Loading...</p>
+      <div className="flex min-h-screen items-center justify-center bg-cream">
+        <LoadingSpinner />
       </div>
     );
   }

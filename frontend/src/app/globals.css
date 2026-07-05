@@ -1,26 +1,110 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --cream: #fbf7ef;
+  --purple: #4c4b7e;
+  --orange: #ffbf75;
+  --yellow: #faf393;
+  --peach: #f2d2ac;
+  --lavender: #a6a5d4;
+  --beige: #efe5d3;
+  --peach-cta: #fddab1;
+  --dark: #2c2c2c;
+  --border: #e5e5e5;
+  --muted: #6b7280;
+  --destructive: #ef4444;
+
+  --background: var(--cream);
+  --foreground: var(--purple);
+  --primary: var(--purple);
+  --primary-foreground: #ffffff;
+  --card: #ffffff;
+  --card-foreground: var(--dark);
+  --muted-foreground: var(--muted);
+  --input-bg: var(--beige);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-cream: var(--cream);
+  --color-purple: var(--purple);
+  --color-orange: var(--orange);
+  --color-yellow: var(--yellow);
+  --color-peach: var(--peach);
+  --color-lavender: var(--lavender);
+  --color-beige: var(--beige);
+  --color-peach-cta: var(--peach-cta);
+  --color-destructive: var(--destructive);
+  --font-display: var(--font-young-serif);
+  --font-body: var(--font-dm-sans);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-dm-sans), system-ui, sans-serif;
+}
+
+.font-display {
+  font-family: var(--font-young-serif), Georgia, serif;
+}
+
+.card-shadow {
+  box-shadow: 0 2px 8px rgba(76, 75, 126, 0.08);
+}
+
+.card-shadow-lg {
+  box-shadow: 0 8px 24px rgba(76, 75, 126, 0.12);
+}
+
+.speech-bubble-user {
+  background: var(--purple);
+  color: white;
+  border-radius: 1.25rem 1.25rem 0.25rem 1.25rem;
+  padding: 0.75rem 1rem;
+}
+
+.speech-bubble-assistant {
+  background: white;
+  color: var(--dark);
+  border: 1px solid var(--border);
+  border-radius: 1.25rem 1.25rem 1.25rem 0.25rem;
+  padding: 0.75rem 1rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes typing-bounce {
+  0%, 60%, 100% { transform: translateY(0); }
+  30% { transform: translateY(-4px); }
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+.animate-float-delayed {
+  animation: float 4s ease-in-out 2s infinite;
+}
+
+.typing-dot {
+  animation: typing-bounce 1.2s ease-in-out infinite;
+}
+
+.typing-dot:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.typing-dot:nth-child(3) {
+  animation-delay: 0.3s;
 }
