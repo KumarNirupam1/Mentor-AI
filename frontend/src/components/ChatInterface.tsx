@@ -109,8 +109,7 @@ export function ChatInterface({ chat, onBack }: ChatInterfaceProps) {
         ) : messages.length === 0 ? (
           <div className="flex flex-1 flex-col items-center justify-center text-center">
             <div className="max-w-sm mockup-card p-8">
-              <PersonaAvatar persona={chat.persona} size="lg" className="mx-auto" />
-              <p className="mt-4 font-display text-xl text-ink">
+              <p className="font-display text-xl text-ink">
                 Say hello to {meta.name}!
               </p>
               <p className="mt-2 text-sm text-muted-foreground">
