@@ -38,6 +38,20 @@ Sign in with Google, choose a persona, start a conversation, and ask anything ab
 - **Persistent chat history** — create, list, resume, and delete conversations per persona
 - **Context-aware replies** — last 100 messages sent to the LLM for coherent multi-turn chat
 - **Clean chat UI** — landing page, login, persona picker, chat list, and live chat interface
+- **Per-mentor rate limits** — 10 messages per mentor, then a 10-minute cooldown (see below)
+
+---
+
+## Rate limiting
+
+To keep OpenAI costs under control, each logged-in user gets **10 messages per mentor** (Hitesh and Piyush tracked separately). After the 10th message, chat is paused for **10 minutes** with a countdown in the UI. Limits reset automatically when the cooldown ends.
+
+| Setting | Default |
+|---------|---------|
+| Messages per mentor | 10 |
+| Cooldown | 10 minutes |
+
+Configurable on the backend via `PERSONA_MESSAGE_LIMIT` and `PERSONA_COOLDOWN_MINUTES`. Quota is reserved before each OpenAI call; failed replies do not count against the limit.
 
 ---
 
@@ -58,7 +72,7 @@ Express Backend (Render)
 
 1. User sends a message from the chat UI
 2. Frontend calls `POST /api/v1/messages/:chatId` with credentials
-3. Backend verifies auth, loads chat, fetches last **100 messages**
+3. Backend verifies auth, checks **rate limit**, loads chat, fetches last **100 messages**
 4. Routes to `hitesh()` or `piyush()` in `backend/src/utils/ai.ts`
 5. Prompt = system persona + developer context + history + new message
 6. OpenAI reply saved to MongoDB and returned to frontend
@@ -247,6 +261,10 @@ REFRESH_TOKEN_SECRET=your_random_secret
 ACCESS_TOKEN_EXPIRY=1d
 REFRESH_TOKEN_EXPIRY=15m
 OPENAI_API_KEY=your_openai_api_key
+
+# Optional rate limits (defaults: 10 messages, 10 min cooldown per mentor)
+PERSONA_MESSAGE_LIMIT=10
+PERSONA_COOLDOWN_MINUTES=10
 ```
 
 ### Frontend (`frontend/.env`)

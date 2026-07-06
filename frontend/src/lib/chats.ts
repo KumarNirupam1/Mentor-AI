@@ -1,6 +1,6 @@
 import { apiFetch } from "./api";
 import type { ApiResponse } from "@/types/user";
-import type { Chat, Persona } from "@/types/chat";
+import type { Chat, Persona, PersonaUsage } from "@/types/chat";
 
 export async function getAllChats(persona: Persona): Promise<Chat[]> {
   const res = await apiFetch(`/api/v1/chats/${persona}`);
@@ -22,4 +22,11 @@ export async function createChat(persona: Persona): Promise<Chat | null> {
 export async function deleteChat(id: string): Promise<boolean> {
   const res = await apiFetch(`/api/v1/chats/${id}`, { method: "DELETE" });
   return res.ok;
+}
+
+export async function getPersonaUsage(persona: Persona): Promise<PersonaUsage | null> {
+  const res = await apiFetch(`/api/v1/chats/usage/${persona}`);
+  if (!res.ok) return null;
+  const body = (await res.json()) as ApiResponse<{ usage: PersonaUsage }>;
+  return body.data.usage ?? null;
 }

@@ -1,6 +1,10 @@
 import { apiFetch } from "./api";
 import type { ApiResponse } from "@/types/user";
-import type { Message } from "@/types/chat";
+import type { Message, PersonaUsage } from "@/types/chat";
+
+export type CreateMessageResult =
+  | { ok: true; message: Message; usage: PersonaUsage | null }
+  | { ok: false; error: string; usage: PersonaUsage | null; rateLimited: boolean };
 
 export async function getAllMessages(chatId: string): Promise<Message[]> {
   const res = await apiFetch(`/api/v1/messages/${chatId}`);
@@ -13,12 +17,38 @@ export async function getAllMessages(chatId: string): Promise<Message[]> {
 export async function createMessage(
   chatId: string,
   content: string,
-): Promise<Message | null> {
+): Promise<CreateMessageResult> {
   const res = await apiFetch(`/api/v1/messages/${chatId}`, {
     method: "POST",
     body: JSON.stringify({ content }),
   });
-  if (!res.ok) return null;
-  const body = (await res.json()) as ApiResponse<{ parsed: Message }>;
-  return body.data.parsed;
+
+  const body = (await res.json()) as ApiResponse<{ parsed: Message; usage?: PersonaUsage }> & {
+    message?: string;
+  };
+
+  if (res.status === 429) {
+    const rateLimitData = body.data as { usage?: PersonaUsage } | undefined;
+    return {
+      ok: false,
+      error: body.message ?? "Message limit reached. Please come back after the cooldown.",
+      usage: rateLimitData?.usage ?? null,
+      rateLimited: true,
+    };
+  }
+
+  if (!res.ok) {
+    return {
+      ok: false,
+      error: body.message ?? "Failed to send message. Please try again.",
+      usage: null,
+      rateLimited: false,
+    };
+  }
+
+  return {
+    ok: true,
+    message: body.data.parsed,
+    usage: body.data.usage ?? null,
+  };
 }

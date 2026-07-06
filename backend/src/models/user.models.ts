@@ -24,7 +24,17 @@ const userSchema = new mongoose.Schema({
     },
     refreshToken: {
         type: String
-    }
+    },
+    personaUsage: {
+        hitesh: {
+            messageCount: { type: Number, default: 0 },
+            cooldownUntil: { type: Date, default: null },
+        },
+        piyush: {
+            messageCount: { type: Number, default: 0 },
+            cooldownUntil: { type: Date, default: null },
+        },
+    },
 }, { timestamps: true });
 
 userSchema.methods.generateAccessToken = function () {
@@ -68,6 +78,16 @@ interface IUser extends mongoose.Document, IUserMethods {
     };
     accessToken: string;
     refreshToken: string;
+    personaUsage?: {
+        hitesh: {
+            messageCount: number;
+            cooldownUntil: Date | null;
+        };
+        piyush: {
+            messageCount: number;
+            cooldownUntil: Date | null;
+        };
+    };
 };
 
 export const User = mongoose.model<IUser>("User", userSchema);

@@ -1,4 +1,6 @@
 import { Chat } from "../models/chats.models.ts";
+import { User } from "../models/user.models.ts";
+import { getPersonaUsage as getUsageSnapshot } from "../utils/persona-limit.ts";
 import { ApiResponse } from "../utils/api-response.ts";
 import { ApiError } from "../utils/api-error.ts";
 import type { Request, Response } from "express";
@@ -88,4 +90,25 @@ const deleteChat = async (req: Request & { user?: any }, res: Response) => {
     }
 }
 
-export { getAllChats, createChat, deleteChat };
+const getPersonaUsage = async (req: Request & { user?: any }, res: Response) => {
+    try {
+        const { persona } = req.params;
+
+        if (!isValidPersona(persona)) {
+            return res.status(400).json(new ApiError(400, "Invalid persona", [], ""));
+        }
+
+        const user = await User.findById(req.user._id);
+        if (!user) {
+            return res.status(404).json(new ApiError(404, "User not found", [], ""));
+        }
+
+        const usage = await getUsageSnapshot(user, persona);
+        return res.status(200).json(new ApiResponse(200, { usage }, "Usage fetched successfully"));
+    } catch (error) {
+        const message = error instanceof Error ? error.message : "Something went wrong while fetching usage";
+        return res.status(500).json(new ApiError(500, message, [error], ""));
+    }
+};
+
+export { getAllChats, createChat, deleteChat, getPersonaUsage };

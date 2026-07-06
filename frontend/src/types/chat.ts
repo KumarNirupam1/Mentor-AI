@@ -1,5 +1,14 @@
 export type Persona = "hitesh" | "piyush";
 
+export interface PersonaUsage {
+  messageCount: number;
+  remaining: number;
+  maxMessages: number;
+  isLimited: boolean;
+  cooldownUntil: string | null;
+  cooldownSecondsRemaining: number;
+}
+
 export interface Chat {
   _id: string;
   userId: string;
