@@ -71,9 +71,18 @@ const createMessage = async (req: Request & { user?: any }, res: Response) => {
             return res.status(403).json(new ApiError(403, "You are not authorized to access this chat", [], ""));
         }
 
-        user = await User.findById(userId);
+        user = await User.findById(userId).select("+openaiApiKey");
         if (!user) {
             return res.status(404).json(new ApiError(404, "User not found", [], ""));
+        }
+
+        if (!user.openaiApiKey?.trim()) {
+            return res.status(403).json({
+                statusCode: 403,
+                success: false,
+                message: "OpenAI API key required. Please add your key to start chatting.",
+                data: { requiresOpenaiKey: true },
+            });
         }
 
         const limitCheck = await reservePersonaMessage(user, chat.persona);
@@ -117,10 +126,11 @@ const createMessage = async (req: Request & { user?: any }, res: Response) => {
         };
 
         let rawContent: string | null;
+        const apiKey = user.openaiApiKey as string;
         if (chat.persona === "hitesh") {
-            rawContent = await hitesh(developer, history, newMessage);
+            rawContent = await hitesh(apiKey, developer, history, newMessage);
         } else {
-            rawContent = await piyush(developer, history, newMessage);
+            rawContent = await piyush(apiKey, developer, history, newMessage);
         }
 
         if (!rawContent) {

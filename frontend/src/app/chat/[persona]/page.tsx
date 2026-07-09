@@ -5,6 +5,7 @@ import { use, useState } from "react";
 
 import { ChatInterface } from "@/components/ChatInterface";
 import { ChatList } from "@/components/ChatList";
+import { OpenaiKeyGate } from "@/components/OpenaiKeyGate";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import type { Chat, Persona } from "@/types/chat";
 
@@ -27,7 +28,9 @@ export default function PersonaChatPage({
 
   return (
     <ProtectedRoute>
-      <PersonaChatContent persona={persona} onBack={() => router.push("/dashboard")} />
+      <OpenaiKeyGate>
+        <PersonaChatContent persona={persona} onBack={() => router.push("/dashboard")} />
+      </OpenaiKeyGate>
     </ProtectedRoute>
   );
 }

@@ -1,5 +1,6 @@
 import { OAuth2Client } from "google-auth-library";
 import jwt from "jsonwebtoken";
+import { OpenAI } from "openai";
 
 import { ApiResponse } from "../utils/api-response.ts";
 import { ApiError } from "../utils/api-error.ts";
@@ -34,6 +35,15 @@ const saveRefreshToken = async (userId: string, refreshToken: string) => {
 const redirectAfterLogin = (res: Response) => {
     const frontendUrl = process.env.FRONTEND_URL || "http://localhost:3000";
     return res.redirect(`${frontendUrl}/dashboard`);
+};
+
+const sanitizeUser = (user: InstanceType<typeof User>) => {
+    const userObj = user.toObject();
+    delete userObj.accessToken;
+    delete userObj.refreshToken;
+    delete userObj.openaiApiKey;
+    userObj.hasOpenaiApiKey = Boolean(user.openaiApiKey?.trim());
+    return userObj;
 };
 
 const getGoogleRedirectUri = async (req: Request, res: Response) => {
@@ -158,16 +168,52 @@ const getMe = async (req: Request & { user?: any }, res: Response) => {
             return res.status(401).json(new ApiError(401, "Unauthorized", [], ""));
         };
 
-        const user = req.user.toObject();
-        delete user.accessToken;
-        delete user.refreshToken;
+        const user = await User.findById(req.user._id).select("+openaiApiKey");
 
-        return res.status(200).json(new ApiResponse(200, { user }, "Success"));
+        if (!user) {
+            return res.status(404).json(new ApiError(404, "User not found", [], ""));
+        }
+
+        return res.status(200).json(new ApiResponse(200, { user: sanitizeUser(user) }, "Success"));
     } catch (error) {
         const message = error instanceof Error ? error.message : "Something went wrong while fetching user";
         return res.status(500).json(new ApiError(500, message, [error], ""));
     }
 }
+
+const saveOpenaiApiKey = async (req: Request & { user?: any }, res: Response) => {
+    try {
+        const apiKey = req.body?.apiKey?.trim();
+
+        if (!apiKey) {
+            return res.status(400).json(new ApiError(400, "OpenAI API key is required", [], ""));
+        }
+
+        if (!apiKey.startsWith("sk-")) {
+            return res.status(400).json(new ApiError(400, "Invalid OpenAI API key format", [], ""));
+        }
+
+        const client = new OpenAI({ apiKey });
+        await client.models.list();
+
+        const user = await User.findByIdAndUpdate(
+            req.user._id,
+            { openaiApiKey: apiKey },
+            { new: true },
+        ).select("+openaiApiKey");
+
+        if (!user) {
+            return res.status(404).json(new ApiError(404, "User not found", [], ""));
+        }
+
+        return res.status(200).json(
+            new ApiResponse(200, { user: sanitizeUser(user) }, "OpenAI API key saved successfully"),
+        );
+    } catch (error) {
+        const message = error instanceof Error ? error.message : "Failed to validate OpenAI API key";
+        return res.status(400).json(new ApiError(400, message, [], ""));
+    }
+};
 
 const logout = async (req: Request & { user?: any }, res: Response) => {
     try {
@@ -184,4 +230,4 @@ const logout = async (req: Request & { user?: any }, res: Response) => {
     }
 }
 
-export { getGoogleRedirectUri, googleLogin, tokenRefresh, logout, getMe };
+export { getGoogleRedirectUri, googleLogin, tokenRefresh, logout, getMe, saveOpenaiApiKey };

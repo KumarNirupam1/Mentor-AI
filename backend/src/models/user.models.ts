@@ -35,6 +35,11 @@ const userSchema = new mongoose.Schema({
             cooldownUntil: { type: Date, default: null },
         },
     },
+    openaiApiKey: {
+        type: String,
+        select: false,
+        default: null,
+    },
 }, { timestamps: true });
 
 userSchema.methods.generateAccessToken = function () {
@@ -88,6 +93,7 @@ interface IUser extends mongoose.Document, IUserMethods {
             cooldownUntil: Date | null;
         };
     };
+    openaiApiKey?: string | null;
 };
 
 export const User = mongoose.model<IUser>("User", userSchema);

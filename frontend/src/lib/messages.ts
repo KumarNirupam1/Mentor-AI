@@ -4,7 +4,13 @@ import type { Message, PersonaUsage } from "@/types/chat";
 
 export type CreateMessageResult =
   | { ok: true; message: Message; usage: PersonaUsage | null }
-  | { ok: false; error: string; usage: PersonaUsage | null; rateLimited: boolean };
+  | {
+      ok: false;
+      error: string;
+      usage: PersonaUsage | null;
+      rateLimited: boolean;
+      requiresOpenaiKey?: boolean;
+    };
 
 export async function getAllMessages(chatId: string): Promise<Message[]> {
   const res = await apiFetch(`/api/v1/messages/${chatId}`);
@@ -34,6 +40,17 @@ export async function createMessage(
       error: body.message ?? "Message limit reached. Please come back after the cooldown.",
       usage: rateLimitData?.usage ?? null,
       rateLimited: true,
+    };
+  }
+
+  if (res.status === 403) {
+    const keyData = body.data as { requiresOpenaiKey?: boolean } | undefined;
+    return {
+      ok: false,
+      error: body.message ?? "OpenAI API key required.",
+      usage: null,
+      rateLimited: false,
+      requiresOpenaiKey: keyData?.requiresOpenaiKey ?? false,
     };
   }
 

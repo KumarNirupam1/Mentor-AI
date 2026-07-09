@@ -39,6 +39,7 @@ Sign in with Google, choose a persona, start a conversation, and ask anything ab
 - **Context-aware replies** — last 100 messages sent to the LLM for coherent multi-turn chat
 - **Clean chat UI** — landing page, login, persona picker, chat list, and live chat interface
 - **Per-mentor rate limits** — 10 messages per mentor, then a 10-minute cooldown (see below)
+- **Bring your own OpenAI key** — each user adds their own API key to chat; no shared server key
 
 ---
 
@@ -52,6 +53,12 @@ To keep OpenAI costs under control, each logged-in user gets **10 messages per m
 | Cooldown | 10 minutes |
 
 Configurable on the backend via `PERSONA_MESSAGE_LIMIT` and `PERSONA_COOLDOWN_MINUTES`. Quota is reserved before each OpenAI call; failed replies do not count against the limit.
+
+---
+
+## OpenAI API key (BYOK)
+
+Each user must add their own OpenAI API key before chatting. Keys are validated on save, stored per user in MongoDB (never returned to the client), and used only for that user's messages. Remove `OPENAI_API_KEY` from the server — the app no longer uses a shared key.
 
 ---
 
@@ -260,7 +267,8 @@ ACCESS_TOKEN_SECRET=your_random_secret
 REFRESH_TOKEN_SECRET=your_random_secret
 ACCESS_TOKEN_EXPIRY=1d
 REFRESH_TOKEN_EXPIRY=15m
-OPENAI_API_KEY=your_openai_api_key
+
+# No shared OpenAI key — users add their own via the app UI
 
 # Optional rate limits (defaults: 10 messages, 10 min cooldown per mentor)
 PERSONA_MESSAGE_LIMIT=10

@@ -5,6 +5,7 @@ export interface User {
   avatar: {
     url: string;
   };
+  hasOpenaiApiKey?: boolean;
   createdAt: string;
   updatedAt: string;
 }

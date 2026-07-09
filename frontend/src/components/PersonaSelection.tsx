@@ -1,10 +1,12 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { LogOut, MessageCircle } from "lucide-react";
+import { KeyRound, LogOut, MessageCircle } from "lucide-react";
 
+import { OpenaiKeyDialog } from "@/components/OpenaiKeyDialog";
 import { PageShell, PillBadge } from "@/components/PageShell";
 import { Button } from "@/components/ui/Button";
 import { useAuth } from "@/context/AuthContext";
@@ -12,10 +14,12 @@ import { PERSONAS } from "@/types/chat";
 import type { Persona } from "@/types/chat";
 
 export function PersonaSelection() {
-  const { user, logout } = useAuth();
+  const { user, logout, refreshUser } = useAuth();
   const router = useRouter();
+  const [showUpdateKey, setShowUpdateKey] = useState(false);
 
   const handleSelect = (persona: Persona) => {
+    if (!user?.hasOpenaiApiKey) return;
     router.push(`/chat/${persona}`);
   };
 
@@ -31,13 +35,24 @@ export function PersonaSelection() {
               Hey, {user?.name?.split(" ")[0]}!
             </h1>
           </div>
-          <Button variant="outline" onClick={() => void logout()} className="!py-2 !px-4 text-sm">
-            <LogOut className="mr-1.5 inline h-4 w-4" />
-            Logout
-          </Button>
+          <div className="flex shrink-0 items-center gap-2">
+            {user?.hasOpenaiApiKey && (
+              <Button
+                variant="outline"
+                onClick={() => setShowUpdateKey(true)}
+                className="!py-2 !px-3 text-sm"
+              >
+                <KeyRound className="mr-1.5 inline h-4 w-4" />
+                API key
+              </Button>
+            )}
+            <Button variant="outline" onClick={() => void logout()} className="!py-2 !px-4 text-sm">
+              <LogOut className="mr-1.5 inline h-4 w-4" />
+              Logout
+            </Button>
+          </div>
         </div>
       </header>
-
       <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-10">
         <div className="mb-10 text-center">
           <div className="mb-4 flex justify-center">
@@ -111,6 +126,16 @@ export function PersonaSelection() {
           </Link>
         </p>
       </main>
+
+      <OpenaiKeyDialog
+        open={showUpdateKey}
+        dismissible
+        onDismiss={() => setShowUpdateKey(false)}
+        onSuccess={() => {
+          setShowUpdateKey(false);
+          void refreshUser();
+        }}
+      />
     </PageShell>
   );
 }

@@ -1,20 +1,14 @@
 import { OpenAI } from "openai";
 import type { ChatCompletionMessageParam } from "openai/resources/chat/completions";
 
-let client: OpenAI | null = null;
-
-const getClient = () => {
-    if (!client) {
-        client = new OpenAI({
-            apiKey: process.env.OPENAI_API_KEY,
-        });
-    }
-    return client;
+const getClient = (apiKey: string) => {
+    return new OpenAI({ apiKey });
 };
 
 type PersonaMessage = ChatCompletionMessageParam;
 
 export const hitesh = async (
+    apiKey: string,
     developer: PersonaMessage,
     history: PersonaMessage[],
     newMessage: PersonaMessage
@@ -141,7 +135,7 @@ export const hitesh = async (
     }
     
     message.push(newMessage);
-  const response = await getClient().chat.completions.create({
+  const response = await getClient(apiKey).chat.completions.create({
     model: 'gpt-4.1-mini',
     messages: message,
   });
@@ -152,6 +146,7 @@ export const hitesh = async (
 }
 
 export const piyush = async (
+    apiKey: string,
     developer: PersonaMessage,
     history: PersonaMessage[],
     newMessage: PersonaMessage
@@ -280,7 +275,7 @@ export const piyush = async (
     }
     message.push(newMessage)
 
-  const response = await getClient().chat.completions.create({
+  const response = await getClient(apiKey).chat.completions.create({
     model: 'gpt-4.1-mini',
     messages: message,
   });
