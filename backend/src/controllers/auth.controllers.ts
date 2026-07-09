@@ -4,6 +4,7 @@ import { OpenAI } from "openai";
 
 import { ApiResponse } from "../utils/api-response.ts";
 import { ApiError } from "../utils/api-error.ts";
+import { decryptSecret, encryptSecret, hasStoredSecret } from "../utils/encryption.ts";
 import type { CookieOptions, Request, Response } from "express";
 import { User } from "../models/user.models.ts";
 
@@ -42,7 +43,7 @@ const sanitizeUser = (user: InstanceType<typeof User>) => {
     delete userObj.accessToken;
     delete userObj.refreshToken;
     delete userObj.openaiApiKey;
-    userObj.hasOpenaiApiKey = Boolean(user.openaiApiKey?.trim());
+    userObj.hasOpenaiApiKey = hasStoredSecret(user.openaiApiKey);
     return userObj;
 };
 
@@ -198,7 +199,7 @@ const saveOpenaiApiKey = async (req: Request & { user?: any }, res: Response) =>
 
         const user = await User.findByIdAndUpdate(
             req.user._id,
-            { openaiApiKey: apiKey },
+            { openaiApiKey: encryptSecret(apiKey) },
             { new: true },
         ).select("+openaiApiKey");
 

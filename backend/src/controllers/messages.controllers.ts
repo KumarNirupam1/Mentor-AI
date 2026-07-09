@@ -6,6 +6,7 @@ import {
     releasePersonaMessage,
     reservePersonaMessage,
 } from "../utils/persona-limit.ts";
+import { decryptSecret, hasStoredSecret } from "../utils/encryption.ts";
 import { ApiError } from "../utils/api-error.ts";
 import { ApiResponse } from "../utils/api-response.ts";
 import type { Request, Response } from "express";
@@ -76,7 +77,7 @@ const createMessage = async (req: Request & { user?: any }, res: Response) => {
             return res.status(404).json(new ApiError(404, "User not found", [], ""));
         }
 
-        if (!user.openaiApiKey?.trim()) {
+        if (!hasStoredSecret(user.openaiApiKey)) {
             return res.status(403).json({
                 statusCode: 403,
                 success: false,
@@ -126,7 +127,7 @@ const createMessage = async (req: Request & { user?: any }, res: Response) => {
         };
 
         let rawContent: string | null;
-        const apiKey = user.openaiApiKey as string;
+        const apiKey = decryptSecret(user.openaiApiKey as string);
         if (chat.persona === "hitesh") {
             rawContent = await hitesh(apiKey, developer, history, newMessage);
         } else {

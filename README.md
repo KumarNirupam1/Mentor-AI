@@ -58,7 +58,7 @@ Configurable on the backend via `PERSONA_MESSAGE_LIMIT` and `PERSONA_COOLDOWN_MI
 
 ## OpenAI API key (BYOK)
 
-Each user must add their own OpenAI API key before chatting. Keys are validated on save, stored per user in MongoDB (never returned to the client), and used only for that user's messages. Remove `OPENAI_API_KEY` from the server — the app no longer uses a shared key.
+Each user must add their own OpenAI API key before chatting. Keys are **encrypted at rest** in MongoDB using AES-256-GCM (`ENCRYPTION_SECRET` on the server). They are never returned to the client. Hashing is not used — the server must decrypt the key to call OpenAI.
 
 ---
 
@@ -269,6 +269,7 @@ ACCESS_TOKEN_EXPIRY=1d
 REFRESH_TOKEN_EXPIRY=15m
 
 # No shared OpenAI key — users add their own via the app UI
+ENCRYPTION_SECRET=your_long_random_encryption_secret_at_least_32_chars
 
 # Optional rate limits (defaults: 10 messages, 10 min cooldown per mentor)
 PERSONA_MESSAGE_LIMIT=10
