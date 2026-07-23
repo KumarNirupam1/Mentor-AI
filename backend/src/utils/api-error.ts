@@ -2,6 +2,7 @@ class ApiError extends Error {
     statusCode: number;
     errors: unknown[];
     success: boolean;
+    declare message: string;
 
     constructor(
         statusCode: number,
@@ -11,6 +12,7 @@ class ApiError extends Error {
     ) {
         super(messsage);
         this.statusCode = statusCode;
+        this.message = messsage;
         this.errors = errors;
         this.success = false;
 
@@ -19,6 +21,15 @@ class ApiError extends Error {
         } else {
             Error.captureStackTrace(this, this.constructor);
         }
+    }
+
+    toJSON() {
+        return {
+            statusCode: this.statusCode,
+            message: this.message,
+            errors: this.errors,
+            success: this.success,
+        };
     }
 }
 

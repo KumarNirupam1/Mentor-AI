@@ -127,11 +127,36 @@ const createMessage = async (req: Request & { user?: any }, res: Response) => {
         };
 
         let rawContent: string | null;
-        const apiKey = decryptSecret(user.openaiApiKey as string);
-        if (chat.persona === "hitesh") {
-            rawContent = await hitesh(apiKey, developer, history, newMessage);
-        } else {
-            rawContent = await piyush(apiKey, developer, history, newMessage);
+        let apiKey: string;
+        try {
+            apiKey = decryptSecret(user.openaiApiKey as string);
+        } catch {
+            await releasePersonaMessage(user, chat.persona);
+            reserved = false;
+            return res.status(400).json(
+                new ApiError(
+                    400,
+                    "Could not read your OpenAI API key. Please re-save it from the dashboard.",
+                    [],
+                    "",
+                ),
+            );
+        }
+
+        try {
+            if (chat.persona === "hitesh") {
+                rawContent = await hitesh(apiKey, developer, history, newMessage);
+            } else {
+                rawContent = await piyush(apiKey, developer, history, newMessage);
+            }
+        } catch (aiError) {
+            await releasePersonaMessage(user, chat.persona);
+            reserved = false;
+            const aiMessage =
+                aiError instanceof Error ? aiError.message : "OpenAI request failed";
+            return res.status(400).json(
+                new ApiError(400, `AI error: ${aiMessage}`, [], ""),
+            );
         }
 
         if (!rawContent) {

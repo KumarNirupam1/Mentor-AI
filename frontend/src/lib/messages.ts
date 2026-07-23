@@ -29,9 +29,20 @@ export async function createMessage(
     body: JSON.stringify({ content }),
   });
 
-  const body = (await res.json()) as ApiResponse<{ parsed: Message; usage?: PersonaUsage }> & {
+  let body: ApiResponse<{ parsed: Message; usage?: PersonaUsage }> & {
     message?: string;
   };
+
+  try {
+    body = (await res.json()) as typeof body;
+  } catch {
+    return {
+      ok: false,
+      error: "Server returned an invalid response. Please try again.",
+      usage: null,
+      rateLimited: false,
+    };
+  }
 
   if (res.status === 429) {
     const rateLimitData = body.data as { usage?: PersonaUsage } | undefined;
@@ -55,9 +66,22 @@ export async function createMessage(
   }
 
   if (!res.ok) {
+    const fallback =
+      typeof body.message === "string" && body.message.trim()
+        ? body.message
+        : "Failed to send message. Please try again.";
     return {
       ok: false,
-      error: body.message ?? "Failed to send message. Please try again.",
+      error: fallback,
+      usage: null,
+      rateLimited: false,
+    };
+  }
+
+  if (!body.data?.parsed) {
+    return {
+      ok: false,
+      error: "Unexpected response from server. Please try again.",
       usage: null,
       rateLimited: false,
     };
